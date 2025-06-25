@@ -27,12 +27,18 @@ struct TimerView: View {
   }
   
   private var mainView: some View {
-    VStack(spacing: 20) {
-      titleView
-      timerStatusView
-      controlButtonsView
+    ZStack {
+      Color(UIColor.systemGroupedBackground)
+        .ignoresSafeArea()
+      
+      VStack(spacing: 25) {
+        titleView
+        timerStatusView
+          .padding(.horizontal)
+        controlButtonsView
+      }
+      .padding()
     }
-    .padding()
   }
   
   private func startTimer() {
@@ -47,8 +53,10 @@ struct TimerView: View {
   
   private var titleView: some View {
     Text(viewModel.timerName)
-      .font(.title2)
-      .bold()
+      .font(.system(size: 28, weight: .bold))
+      .foregroundColor(.primary)
+      .padding(.vertical, 5)
+      .shadow(color: .gray.opacity(0.3), radius: 2, x: 0, y: 1)
   }
   
   private var timerStatusView: some View {
@@ -56,22 +64,48 @@ struct TimerView: View {
       if !viewModel.isTimerRunning {
         // Show elapsed time from adjustedStartDate (not running)
         Text(Utils.getExactTime(from: viewModel.adjustedStartDate))
-          .font(.title)
+          .font(.system(size: 42, weight: .semibold))
+          .foregroundColor(.blue)
+          .monospacedDigit()
+          .padding(.vertical, 10)
+          .frame(minHeight: 60)
+          .shadow(color: .blue.opacity(0.3), radius: 3, x: 0, y: 2)
       } else if viewModel.isPaused {
         // Show elapsed time from adjustedStartDate to pauseDate
         if let pauseDate = viewModel.pauseDate {
           Text(Utils.getExactTime(from: viewModel.adjustedStartDate, to: pauseDate))
-            .font(.title)
+            .font(.system(size: 42, weight: .semibold))
+            .foregroundColor(.orange)
+            .monospacedDigit()
+            .padding(.vertical, 10)
+            .frame(minHeight: 60)
+            .shadow(color: .orange.opacity(0.3), radius: 3, x: 0, y: 2)
         } else {
           Text(Utils.getExactTime(from: viewModel.adjustedStartDate))
-            .font(.title)
+            .font(.system(size: 42, weight: .semibold))
+            .foregroundColor(.orange)
+            .monospacedDigit()
+            .padding(.vertical, 10)
+            .frame(minHeight: 60)
+            .shadow(color: .orange.opacity(0.3), radius: 3, x: 0, y: 2)
         }
       } else {
         // Show live updating relative time
         Text(viewModel.adjustedStartDate, style: .relative)
-          .font(.title)
+            .font(.system(size: 42, weight: .semibold))
+            .foregroundColor(.green)
+            .monospacedDigit()
+            .padding(.vertical, 10)
+            .frame(minHeight: 60)
+            .shadow(color: .green.opacity(0.3), radius: 3, x: 0, y: 2)
       }
     }
+    .padding(.horizontal)
+    .background(
+      RoundedRectangle(cornerRadius: 12)
+        .fill(Color(UIColor.systemBackground))
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    )
   }
   
   private var controlButtonsView: some View {
@@ -106,12 +140,19 @@ struct TimerView: View {
   private func actionButton(title: String, color: Color, action: @escaping () -> Void) -> some View {
     Button(action: action) {
       Text(title)
-        .font(.headline)
+        .font(.system(size: 18, weight: .bold))
         .padding()
         .frame(maxWidth: .infinity)
-        .background(color)
+        .background(
+          LinearGradient(
+            gradient: Gradient(colors: [color, color.opacity(0.8)]),
+            startPoint: .top,
+            endPoint: .bottom
+          )
+        )
         .foregroundColor(.white)
-        .cornerRadius(10)
+        .cornerRadius(12)
+        .shadow(color: color.opacity(0.4), radius: 4, x: 0, y: 2)
     }
   }
 }

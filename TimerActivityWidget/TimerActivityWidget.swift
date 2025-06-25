@@ -44,32 +44,41 @@ struct TimerActivityDynamicIsland: Widget {
   func timerDynamicIslandCenterView(
     context: ActivityViewContext<TimerActivityAttributes>,
     foregroundColor: Color) -> some View {
-      VStack {
+      VStack(spacing: 8) {
         Text(context.attributes.timerName)
-          .bold()
+          .font(.system(size: 16, weight: .bold))
           .foregroundColor(foregroundColor)
+          .shadow(color: Color.black.opacity(0.5), radius: 1, x: 0, y: 1)
         
         HStack {
           Image(systemName: "backward")
-            .bold()
+            .font(.system(size: 14, weight: .bold))
             .foregroundColor(foregroundColor)
+            .shadow(color: Color.black.opacity(0.5), radius: 1, x: 0, y: 1)
             .rotationEffect(.degrees(context.state.isPaused ? 180 : 0))
           
           if context.state.isPaused {
             Text(Utils.getExactTime(from: context.state.adjustedStartDate))
-              .bold()
+              .font(.system(size: 22, weight: .bold))
               .foregroundColor(foregroundColor)
+              .monospacedDigit()
+              .shadow(color: Color.black.opacity(0.5), radius: 1.5, x: 0, y: 1)
               .multilineTextAlignment(.center)
+              .padding(.vertical, 4)
           } else {
             Text(context.state.adjustedStartDate, style: .relative)
-              .bold()
+              .font(.system(size: 22, weight: .bold))
               .foregroundColor(foregroundColor)
+              .monospacedDigit()
+              .shadow(color: Color.black.opacity(0.5), radius: 1.5, x: 0, y: 1)
               .multilineTextAlignment(.center)
+              .padding(.vertical, 4)
           }
           
           Image(systemName: "forward")
-            .bold()
+            .font(.system(size: 14, weight: .bold))
             .foregroundColor(foregroundColor)
+            .shadow(color: Color.black.opacity(0.5), radius: 1, x: 0, y: 1)
             .rotationEffect(.degrees(context.state.isPaused ? -180 : 0))
         }
         .frame(maxWidth: .infinity)
@@ -83,19 +92,31 @@ struct TimerActivityDynamicIsland: Widget {
   func timerDynamicIslandBottomView(
     context: ActivityViewContext<TimerActivityAttributes>,
     foregroundColor: Color) -> some View {
-      HStack(spacing: 20) {
+      HStack(spacing: 30) {
         // Play/Pause button
         Button(intent: PlayPauseTimerIntent(timerName: context.attributes.timerName)) {
           Image(systemName: context.state.isPaused ? "play.fill" : "pause.fill")
-            .bold()
+            .font(.system(size: 18, weight: .bold))
             .foregroundColor(foregroundColor)
+            .shadow(color: Color.black.opacity(0.5), radius: 1, x: 0, y: 1)
+            .frame(width: 44, height: 44)
+            .background(
+              Circle()
+                .fill(Color.white.opacity(0.15))
+            )
         }
         
         // Stop button
         Button(intent: StopTimerIntent(timerName: context.attributes.timerName)) {
           Image(systemName: "stop.fill")
-            .bold()
+            .font(.system(size: 18, weight: .bold))
             .foregroundColor(foregroundColor)
+            .shadow(color: Color.black.opacity(0.5), radius: 1, x: 0, y: 1)
+            .frame(width: 44, height: 44)
+            .background(
+              Circle()
+                .fill(Color.white.opacity(0.15))
+            )
         }
       }
       .padding(.horizontal)
@@ -106,9 +127,15 @@ struct TimerActivityDynamicIsland: Widget {
   @ViewBuilder
   func timerLockScreenView(
     context: ActivityViewContext<TimerActivityAttributes>) -> some View {
-      VStack() {
-        timerDynamicIslandCenterView(context: context, foregroundColor: .black)
-        timerDynamicIslandBottomView(context: context, foregroundColor: .black)
+      ZStack {
+        RoundedRectangle(cornerRadius: 16)
+          .fill(Color.white.opacity(0.8))
+          .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
+        
+        VStack(spacing: 12) {
+          timerDynamicIslandCenterView(context: context, foregroundColor: .black)
+          timerDynamicIslandBottomView(context: context, foregroundColor: .black)
+        }
       }
       .frame(maxWidth: .infinity)
       .padding()
