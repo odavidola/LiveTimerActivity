@@ -127,17 +127,82 @@ struct TimerActivityDynamicIsland: Widget {
   @ViewBuilder
   func timerLockScreenView(
     context: ActivityViewContext<TimerActivityAttributes>) -> some View {
-      ZStack {
-        RoundedRectangle(cornerRadius: 16)
-          .fill(Color.white.opacity(0.8))
-          .shadow(color: Color.black.opacity(0.1), radius: 3, x: 0, y: 2)
-        
-        VStack(spacing: 12) {
-          timerDynamicIslandCenterView(context: context, foregroundColor: .black)
-          timerDynamicIslandBottomView(context: context, foregroundColor: .black)
+      VStack(alignment: .leading, spacing: 8) {
+        // Time display
+        if context.state.isPaused {
+            Text(Utils.getExactTime(from: context.state.adjustedStartDate))
+                 .font(.system(size: 48, weight: .bold, design: .rounded))
+                 .foregroundColor(.white)
+                 .monospacedDigit()
+                 .frame(maxWidth: .infinity, alignment: .center)
+        } else {
+            Text(context.state.adjustedStartDate, style: .timer)
+                 .font(.system(size: 48, weight: .bold, design: .rounded))
+                 .foregroundColor(.white)
+                 .monospacedDigit()
+                 .frame(maxWidth: .infinity, alignment: .center)
         }
+        
+        // Activity name
+        Text(context.attributes.timerName)
+          .font(.system(size: 16, weight: .medium))
+          .foregroundColor(.white)
+          .frame(maxWidth: .infinity, alignment: .leading)
+        
+        // Duration
+        Text("10m") // This should be calculated based on your timer logic
+          .font(.system(size: 14))
+          .foregroundColor(Color(white: 0.8))
+          .frame(maxWidth: .infinity, alignment: .leading)
+        
+        // Next activity (if any)
+        if let nextActivity = getNextActivity() {
+          HStack {
+            Text("▶")
+              .font(.system(size: 12))
+              .foregroundColor(.white.opacity(0.7))
+            Text(nextActivity)
+              .font(.system(size: 14))
+              .foregroundColor(Color(white: 0.7))
+          }
+        }
+        
+        // Action buttons
+        HStack(spacing: 20) {
+          Spacer()
+          
+          // Pause/Resume button
+          Button(intent: PlayPauseTimerIntent(timerName: context.attributes.timerName)) {
+            Image(systemName: context.state.isPaused ? "play.fill" : "pause.fill")
+              .font(.system(size: 16, weight: .bold))
+              .foregroundColor(.white)
+              .frame(width: 44, height: 44)
+              .background(Circle().fill(Color.white.opacity(0.2)))
+          }
+          
+          // Stop button
+          Button(intent: StopTimerIntent(timerName: context.attributes.timerName)) {
+            Image(systemName: "checkmark")
+              .font(.system(size: 16, weight: .bold))
+              .foregroundColor(.white)
+              .frame(width: 44, height: 44)
+              .background(Circle().fill(Color.white.opacity(0.2)))
+          }
+        }
+        .padding(.top, 8)
       }
-      .frame(maxWidth: .infinity)
-      .padding()
-    }
+      .padding(16)
+      .background(
+        RoundedRectangle(cornerRadius: 16)
+          .fill(Color(white: 0.15))
+      )
+      .padding(.horizontal, 16)
+  }
+  
+  // Helper function to get next activity (you'll need to implement this)
+  private func getNextActivity() -> String? {
+    // Implement your logic to get the next activity
+    // For now, returning nil as we don't have the data structure
+    return nil
+  }
 }
