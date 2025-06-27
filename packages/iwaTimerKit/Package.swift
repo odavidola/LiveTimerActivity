@@ -4,8 +4,8 @@
 import PackageDescription
 
 let package = Package(
-    platforms: [.iOS(.v16_1)],
     name: "iwaTimerKit",
+    platforms: [.iOS(.v16)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(name: "iwaTimerKit", targets: ["iwaTimerKit"]),
