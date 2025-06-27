@@ -1,0 +1,7 @@
+{
+  "name": "iwa-monorepo",
+  "private": true,
+  "workspaces": [
+    "iwa"
+  ]
+}
