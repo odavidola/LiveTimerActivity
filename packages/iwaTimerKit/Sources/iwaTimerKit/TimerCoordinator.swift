@@ -8,6 +8,7 @@
 import Foundation
 import ActivityKit
 
+@MainActor
 public final class TimerCoordinator {
   public static let shared = TimerCoordinator()
   private init() {}
